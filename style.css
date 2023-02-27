@@ -9,3 +9,7 @@ body {
 #visualizations {
     display: flex;
 }
+
+.point {
+    opacity: 50%;
+}
