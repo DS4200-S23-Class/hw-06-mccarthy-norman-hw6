@@ -70,5 +70,74 @@ d3.csv("data/iris.csv").then((data) => {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("text-decoration", "underline")
-      .text("Value vs Date Graph");
+      .text("Petal Length vs Sepal Length");
+});
+
+const FRAME2 = d3
+  .select("#vis2")
+  .append("svg")
+  .attr("height", FRAME_HEIGHT)
+  .attr("width", FRAME_WIDTH)
+  .attr("class", "frame");
+
+d3.csv("data/iris.csv").then((data) => {
+  const COLOR = d3
+    .scaleOrdinal()
+    .domain(["setosa", "versicolor", "virginica"])
+    .range(["red", "green", "blue"]);
+
+  const MAX_X = d3.max(data, (d) => {
+    return parseInt(d.Petal_Width);
+  });
+
+  const X_SCALE = d3
+    .scaleLinear()
+    .domain([0, MAX_X + 1])
+    .range([0, VIS_WIDTH]);
+
+  const MAX_Y = d3.max(data, (d) => {
+    return parseInt(d.Sepal_Width);
+  });
+
+  const Y_SCALE = d3
+    .scaleLinear()
+    .domain([0, MAX_Y + 1])
+    .range([VIS_WIDTH, 0]);
+
+  FRAME2.selectAll("points")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => {
+      return X_SCALE(d.Petal_Width) + MARGINS.left;
+    })
+    .attr("cy", (d) => {
+      return Y_SCALE(d.Sepal_Width) + MARGINS.bottom;
+    })
+    .attr("r", 10)
+    .attr("class", "point")
+    .attr("fill", (d) => {
+      return COLOR(d.Species);
+    });
+
+  FRAME2.append("g")
+    .attr(
+      "transform",
+      "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")"
+    )
+    .call(d3.axisBottom(X_SCALE).ticks(5))
+    .attr("font-size", 12);
+
+  FRAME2.append("g")
+    .attr("transform", `translate( ${MARGINS.bottom}, ${MARGINS.left})`)
+    .call(d3.axisLeft(Y_SCALE).ticks(5))
+    .attr("font-size", 12);
+
+  FRAME2.append("text")
+    .attr("x", FRAME_WIDTH / 2)
+    .attr("y", MARGINS.top / 2)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("text-decoration", "underline")
+    .text("Petal Width vs Sepal Width");
 });
