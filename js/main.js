@@ -121,6 +121,15 @@ d3.csv("data/iris.csv").then((data) => {
       return COLOR(d.Species);
     });
 
+    FRAME2.append("g")
+      .attr("class", "brush")
+      .call(
+        d3.brush().extent([
+          [0, 0],
+          [500, 500],
+        ])
+      );
+
   FRAME2.append("g")
     .attr(
       "transform",
