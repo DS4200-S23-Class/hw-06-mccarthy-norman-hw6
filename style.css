@@ -1,0 +1,11 @@
+body {
+    font-family: Arial;
+}
+
+.centered {
+    text-align: center;
+}
+
+#visualizations {
+    display: flex;
+}
