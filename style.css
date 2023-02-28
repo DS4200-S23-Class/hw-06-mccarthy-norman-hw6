@@ -13,3 +13,13 @@ body {
 .point {
     opacity: 50%;
 }
+
+.selected {
+    stroke: orange;
+    stroke-width: 5px;
+}
+
+.unselected {
+    stroke: none;
+    stroke-width: 0;
+}

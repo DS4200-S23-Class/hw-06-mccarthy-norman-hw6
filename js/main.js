@@ -151,8 +151,14 @@ d3.csv("data/iris.csv").then((data) => {
     .domain([0, MAX_Y + 5])
     .range([VIS_HEIGHT, 0]);
 
+    const bars = [
+      { Species: "setosa" },
+      { Species: "versicolor" },
+      { Species: "virginica" },
+    ];
+
   FRAME3.selectAll("bars")
-    .data(data)
+    .data(bars)
     .enter()
     .append("rect")
     .attr("x", function (d) {
@@ -194,14 +200,24 @@ d3.csv("data/iris.csv").then((data) => {
     update();
   }
 
+  function colorInBrush(color) {
+    for (let i = 0; i < data.length; i++) {
+        if (isInBrushExtent(data[i]) && color === COLOR(data[i].Species)) {
+          return true;
+        }
+    }
+    return false;
+  }
+
   function isInBrushExtent(d) {
-    return (
+    const isInArea = (
       brushExtent &&
       X_SCALE_WIDTH(d.Petal_Width) >= brushExtent[0][0] - MARGINS.left &&
       X_SCALE_WIDTH(d.Petal_Width) <= brushExtent[1][0] - MARGINS.right &&
       Y_SCALE_WIDTH(d.Sepal_Width) >= brushExtent[0][1] - MARGINS.top &&
       Y_SCALE_WIDTH(d.Sepal_Width) <= brushExtent[1][1] - MARGINS.bottom
     );
+    return isInArea;
   }
 
   function update() {
@@ -227,10 +243,9 @@ d3.csv("data/iris.csv").then((data) => {
         return isInBrushExtent(d) ? 0.8 : 0.5;
       });
 
-    FRAME3.selectAll("bars")
-      .data(data)
-      .enter()
-      .append("rect")
+    d3.select("#vis3")
+      .selectAll("rect")
+      .data(bars)
       .attr("x", function (d) {
         return X_SCALE(d.Species) + MARGINS.left;
       })
@@ -241,11 +256,8 @@ d3.csv("data/iris.csv").then((data) => {
       .attr("fill", (d) => {
         return COLOR(d.Species);
       })
-      .attr("stroke", (d) => {
-        return isInBrushExtent(d) ? "orange" : null;
-      })
-      .attr("stroke-width", (d) => {
-        return isInBrushExtent(d) ? 5 : null;
+      .attr("class", (d) => {
+        return colorInBrush(COLOR(d.Species)) ? "selected" : "unselected";
       });
   }
 
